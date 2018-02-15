@@ -421,7 +421,7 @@
         this._value = this.value;
 
         // This is important to be able to access component methods inside the templates used with Templatizer
-        this.dataHost = this;
+        //this.dataHost = this;
 
         // Need to capture mousedown to prevent the focus to switch from input field when user clicks in the scrollbar
         // and the autosuggest is a child of an element with tabindex.
@@ -429,15 +429,16 @@
           event.preventDefault();
         });
 
-        var customTemplate = Array.from(Polymer.dom(this.$.templatesSlot)
-          .getEffectiveChildNodes())
+        var customTemplate = Array.from(Polymer.dom(this.$.templates)
+          .getDistributedNodes())
           .find(function (n) {
              return n.nodeType === Node.ELEMENT_NODE && n.tagName === 'TEMPLATE';
            }),
            template = customTemplate || this.$.defaultTemplate;
 
-        template.slot = '';
         Polymer.dom(this.$.list).appendChild(template);
+        template.slot = '';
+        template.__dataHost = this;
       },
 
       attached: function () {
