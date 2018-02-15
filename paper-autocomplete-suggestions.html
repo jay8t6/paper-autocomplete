@@ -429,15 +429,15 @@
           event.preventDefault();
         });
 
-      var customTemplate = Array.from(Polymer.dom(this.$.templatesSlot)
-        .getEffectiveChildNodes())
-        .find(function (n) {
-           return n.nodeType === Node.ELEMENT_NODE && n.tagName === 'TEMPLATE';
-         }),
-         template = customTemplate || this.$.defaultTemplate;
+        var customTemplate = Array.from(Polymer.dom(this.$.templatesSlot)
+          .getEffectiveChildNodes())
+          .find(function (n) {
+             return n.nodeType === Node.ELEMENT_NODE && n.tagName === 'TEMPLATE';
+           }),
+           template = customTemplate || this.$.defaultTemplate;
 
-      template.slot = '';
-      Polymer.dom(this.$.list).append(template);
+        template.slot = '';
+        Polymer.dom(this.$.list).appendChild(template);
       },
 
       attached: function () {
