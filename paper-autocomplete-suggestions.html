@@ -181,26 +181,19 @@
         <iron-list id="list" scroll-target="suggestionsWrapper"
           selection-enabled
           items="[[ _suggestions ]]" as="item">
-          <template>
-            <paper-item id$="[[ _getSuggestionId(index) ]]" role="option" aria-selected$="[[ selected ]]" on-tap="_onSelect">
-              <div>[[ _getItemText(item) ]]</div>
-              <paper-ripple></paper-ripple>
-            </paper-item>
-          </template>
         </iron-list>
       </paper-material>
 
       <!-- Default suggestion template -->
       <template id="defaultTemplate">
-        <paper-item id$="[[_getSuggestionId(index)]]" role="option" aria-selected="false" on-tap="_onSelect">
-          <div>[[_getItemText(item)]]</div>
+        <paper-item id$="[[ _getSuggestionId(index) ]]" role="option" aria-selected$="[[ selected ]]" on-tap="_onSelect">
+          <div>[[ _getItemText(item) ]]</div>
           <paper-ripple></paper-ripple>
         </paper-item>
       </template>
 
-  <!-- Custom template -->
-  <slot id="templates" name="autocomplete-custom-template"></slot>
-  </div>
+      <slot id="templates" name="autocomplete-custom-template"></slot>
+    </div>
   </template>
 </dom-module>
 <script>
@@ -436,11 +429,15 @@
           event.preventDefault();
         });
 
-        // We need to enforce that dataHost is the suggestions and not the custom polymer element where the template
-        // is defined. If we do not do this, it won't be possible to access paperSuggestions from the custom template
-        // TODO: find a way to achieve this without modifying Polymer internal properties
-        // this._suggestionTemplate.__dataHost = this;
-        // this.templatize(this._suggestionTemplate);
+      var customTemplate = Array.from(Polymer.dom(this.$.templatesSlot)
+        .getEffectiveChildNodes())
+        .find(function (n) {
+           return n.nodeType === Node.ELEMENT_NODE && n.tagName === 'TEMPLATE';
+         }),
+         template = customTemplate || this.$.defaultTemplate;
+
+      template.slot = '';
+      Polymer.dom(this.$.list).append(template);
       },
 
       attached: function () {
